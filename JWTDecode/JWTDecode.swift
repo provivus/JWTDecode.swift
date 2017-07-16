@@ -38,28 +38,6 @@ public func decode(jwt: String) throws -> JWT {
 }
 
 
-public func signingInput(body: [String: Any]) -> String {
-    
-    func encodeJSON(_ payload: [String: Any]) -> String? {
-        if let data = try? JSONSerialization.data(withJSONObject: payload) {
-            return base64UrlEncode(data)
-        }
-        return nil
-    }
-    
-    let header = encodeJSON(["typ": "JWT", "alg": "ES256K"])!
-    let payload = encodeJSON(body)!
-    
-    let signingInput = "\(header).\(payload)"
-    return signingInput
-}
-
-public func encodedToken(signingInput: String, signatureData: Data) -> String {
-    
-    let encodedSignature = base64UrlEncode(signatureData)
-    return "\(signingInput).\(encodedSignature)"
-    
-}
 
 struct DecodedJWT: JWT {
 
@@ -149,14 +127,6 @@ public struct Claim {
     }
 }
 
-private func base64UrlEncode(_ input: Data) -> String {
-    let data = input.base64EncodedData(options: NSData.Base64EncodingOptions(rawValue: 0))
-    let string = String(data: data, encoding: .utf8)!
-    return string
-        .replacingOccurrences(of: "+", with: "-", options: NSString.CompareOptions(rawValue: 0), range: nil)
-        .replacingOccurrences(of: "/", with: "_", options: NSString.CompareOptions(rawValue: 0), range: nil)
-        .replacingOccurrences(of: "=", with: "", options: NSString.CompareOptions(rawValue: 0), range: nil)
-}
 
 private func base64UrlDecode(_ value: String) -> Data? {
     var base64 = value

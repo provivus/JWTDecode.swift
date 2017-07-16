@@ -68,4 +68,9 @@ public class _JWT: NSObject {
         let jwt = try DecodedJWT(jwt: jwtValue)
         return _JWT(jwt: jwt)
     }
+    
+    public class func encode(jwt jwtValue: String) throws -> _JWT {
+        let jwt = try DecodedJWT(jwt: jwtValue)
+        return _JWT(jwt: jwt)
+    }
 }
