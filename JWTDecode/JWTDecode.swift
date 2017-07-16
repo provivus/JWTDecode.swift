@@ -36,6 +36,30 @@ public func decode(jwt: String) throws -> JWT {
     return try DecodedJWT(jwt: jwt)
 }
 
+
+public func signingInput(body: [String: Any]) -> String {
+    
+    func encodeJSON(_ payload: [String: Any]) -> String? {
+        if let data = try? JSONSerialization.data(withJSONObject: payload) {
+            return base64UrlEncode(data)
+        }
+        return nil
+    }
+    
+    let header = encodeJSON(["typ": "JWT", "alg": "ES256K"])!
+    let payload = encodeJSON(body)!
+    
+    let signingInput = "\(header).\(payload)"
+    return signingInput
+}
+
+public func encodedToken(signingInput: String, signatureData: Data) -> String {
+    
+    let encodedSignature = base64UrlEncode(signatureData)
+    return "\(signingInput).\(encodedSignature)"
+    
+}
+
 struct DecodedJWT: JWT {
 
     let header: [String: Any]
