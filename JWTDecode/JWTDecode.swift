@@ -32,6 +32,7 @@ import Foundation
 
  - returns: a decoded token as an instance of JWT
  */
+
 public func decode(jwt: String) throws -> JWT {
     return try DecodedJWT(jwt: jwt)
 }
@@ -146,6 +147,15 @@ public struct Claim {
         }
         return nil
     }
+}
+
+private func base64UrlEncode(_ input: Data) -> String {
+    let data = input.base64EncodedData(options: NSData.Base64EncodingOptions(rawValue: 0))
+    let string = String(data: data, encoding: .utf8)!
+    return string
+        .replacingOccurrences(of: "+", with: "-", options: NSString.CompareOptions(rawValue: 0), range: nil)
+        .replacingOccurrences(of: "/", with: "_", options: NSString.CompareOptions(rawValue: 0), range: nil)
+        .replacingOccurrences(of: "=", with: "", options: NSString.CompareOptions(rawValue: 0), range: nil)
 }
 
 private func base64UrlDecode(_ value: String) -> Data? {
